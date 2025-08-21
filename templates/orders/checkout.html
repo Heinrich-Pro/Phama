@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Paiement{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Votre panier</h1>
+    {% if items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.price }} €</td>
+                <td>{{ item.price }} €</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3"><strong>Total</strong></td>
+                <td>{{ total }} €</td>
+            </tr>
+        </tbody>
+    </table>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Confirmer la commande</button>
+    </form>
+    {% else %}
+    <p>Votre panier est vide.</p>
+    {% endif %}
+</div>
+{% endblock %}

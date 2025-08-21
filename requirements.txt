@@ -1,0 +1,11 @@
+Django==4.2.7
+psycopg2-binary==2.9.7
+Pillow==10.0.1
+django-crispy-forms==2.0
+crispy-bootstrap4==2022.1
+reportlab==4.0.4  # Pour la génération de PDF
+django-extensions==3.2.3
+dj-database-url==2.1.0  # Pour DB URL en prod
+whitenoise==6.6.0  # Pour static files en prod
+gunicorn==22.0.0  # Server
+uvicorn==0.30.3  # ASGI worker

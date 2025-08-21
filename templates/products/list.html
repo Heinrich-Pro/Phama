@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Catalogue des médicaments{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Catalogue des médicaments</h1>
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="q" class="form-control" placeholder="Rechercher un médicament..." value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-4">
+                <select name="category" class="form-control">
+                    <option value="">Toutes catégories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filtrer</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                    <p class="card-text"><strong>Prix:</strong> {{ product.price }} €</p>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">Ajouter au panier</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Aucun produit trouvé.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

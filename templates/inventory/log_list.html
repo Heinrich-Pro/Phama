@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Logs d'inventaire{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Logs d'inventaire</h1>
+    {% if logs %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Changement</th>
+                <th>Date</th>
+                <th>Raison</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.product.name }}</td>
+                <td>{{ log.change }}</td>
+                <td>{{ log.date }}</td>
+                <td>{{ log.reason }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun log d'inventaire.</p>
+    {% endif %}
+</div>
+{% endblock %}

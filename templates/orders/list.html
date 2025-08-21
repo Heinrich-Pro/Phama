@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Vos commandes{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Vos commandes</h1>
+    {% if orders %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Commande</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at }}</td>
+                <td>{{ order.get_status_display }}</td>
+                <td>{{ order.total_price }} €</td>
+                <td>
+                    <a href="{% url 'order_detail' order.id %}" class="btn btn-info btn-sm">Détails</a>
+                    <a href="{% url 'generate_invoice' order.id %}" class="btn btn-secondary btn-sm">Télécharger facture</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Vous n'avez aucune commande.</p>
+    {% endif %}
+</div>
+{% endblock %}
