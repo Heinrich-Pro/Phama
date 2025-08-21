@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,52 +21,52 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8*3p&8(cecua(m$ch=nox+=ilc(+9y#_hsxq(11^wm441i#ptx'
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')  # Utilise une variable d'environnement
 
-DEBUG = True  # False en production
+DEBUG = os.getenv('DEBUG', 'False') == 'True'  # False en production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']  # Ajoute ton domaine Render
 
 INSTALLED_APPS = [
-   'django.contrib.admin',
-   'django.contrib.auth',
-   'django.contrib.contenttypes',
-   'django.contrib.sessions',
-   'django.contrib.messages',
-   'django.contrib.staticfiles',
-   'accounts',
-   'products',
-   'orders',
-   'inventory',
-   'crispy_forms',
-   'crispy_bootstrap4',
-   'django_extensions',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'accounts',
+    'products',
+    'orders',
+    'inventory',
+    'crispy_forms',
+    'crispy_bootstrap4',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Pour fichiers statiques
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'pharmacy_online.urls'
 
 TEMPLATES = [
-   {
+    {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-        'context_processors': [
-            'django.template.context_processors.debug',
-            'django.template.context_processors.request',
-            'django.contrib.auth.context_processors.auth',
-            'django.contrib.messages.context_processors.messages',
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -74,37 +75,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pharmacy_online.wsgi.application'
 
 DATABASES = {
-     'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'pharmacy_db',
-       'USER': 'your_username',  # Replace with your PostgreSQL username
-       'PASSWORD': 'your_password',  # Replace with your PostgreSQL password
-       'HOST': 'localhost',
-       'PORT': '5432',
-      }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',  # Fallback local
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-       'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-       },
-    {
-       'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-       },
-   {
-       'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-       },
-   {
-       'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-       },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'fr-fr'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 STATIC_URL = '/static/'
@@ -119,9 +105,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
