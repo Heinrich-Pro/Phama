@@ -1,0 +1,1 @@
+web: gunicorn pharmacy_online.wsgi:application --worker-class uvicorn.workers.UvicornWorker
